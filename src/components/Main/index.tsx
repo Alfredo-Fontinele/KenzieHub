@@ -25,7 +25,7 @@ export const Main = () => {
                 setTechs(technologies)
             }
         })()
-    }, [techs])
+    }, [])
 
     return (
         <>

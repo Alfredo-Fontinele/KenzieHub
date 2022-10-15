@@ -4,10 +4,10 @@ import { Header } from "../../components/Header"
 import { Line } from "../../components/LineDivision/style"
 import { Main } from "../../components/Main"
 import { User } from "../../components/User"
-import { ValidationContext } from "../../hooks/validation"
+import { useValidation } from "../../context/validation"
 
 export const Dashboard = () => {
-    const { navigate }:any = useContext(ValidationContext)
+    const { navigate } = useValidation()
 
     useEffect(() => {
         const logged = localStorage.getItem("@hub:token")

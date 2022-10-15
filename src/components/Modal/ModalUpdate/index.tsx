@@ -1,13 +1,21 @@
-import { useState } from 'react'
+import { useState, useRef, FormEvent } from 'react'
 import { toast } from 'react-toastify'
+import { AnyObject } from 'yup/lib/types'
+import { useValidation } from '../../../context/validation'
 import { API } from '../../../services/api'
 import { ModalStructure } from '../ModalStructure'
 import * as S from './style'
 
-export const ModalUpdate = ({ cardCurrent, setStatusModalUpdate, setTechs }:any) => {
-    const token = localStorage.getItem("@hub:token")
-    const [selectValue, setSelectValue] = useState(null)
+interface iValidatyObjectUpdate {
+    status: string | undefined
+}
+
+export const ModalUpdate = ({ cardCurrent, setStatusModalUpdate, setTechs }:AnyObject) => {
+    const { getUserData } = useValidation()
     const { id, title } = cardCurrent
+    const token = localStorage.getItem("@hub:token")
+    const nameValue = useRef<HTMLInputElement>(null)
+    const selectValue = useRef<HTMLSelectElement>(null)
 
     const deleteTechnology = async () => {
         try {
@@ -16,22 +24,26 @@ export const ModalUpdate = ({ cardCurrent, setStatusModalUpdate, setTechs }:any)
                     "Authorization": `Bearer ${token}`
                 }
             })
-            toast.success("Tecnologia Deletada com Sucesso")
+            const result = await getUserData(token)
+            setTechs(result)
             setStatusModalUpdate(false)
+            toast.success("Tecnologia Deletada com Sucesso")
         } catch {
             toast.error("Ops! Verifique se preencheu os campos corretamente")
         }
     }
 
-    const handleSubmit = async (e:any) => {
+    const handleSubmit = async (e:FormEvent) => {
         e.preventDefault()
         try {
-            const body = { 
-                status: selectValue 
+            const body:iValidatyObjectUpdate = {
+                status: selectValue.current?.value
             }
             await API.put(`users/techs/${id}`, body, {
                 headers: { "Authorization": `Bearer ${token}` }
             })
+            const result = await getUserData(token)
+            setTechs(result)
             toast.success("Tecnologia Atualizada com Sucesso")
             setStatusModalUpdate(false)
         } catch {
@@ -48,9 +60,9 @@ export const ModalUpdate = ({ cardCurrent, setStatusModalUpdate, setTechs }:any)
                 </S.ModalTop>
                 <S.ModalDescription>
                     <label>Nome do Projeto</label>
-                    <input disabled type="text" placeholder={`${title} | Este campo não é editável`}/>
+                    <input disabled ref={nameValue} type="text" placeholder={`${title} | Este campo não é editável`}/>
                     <label>Status</label>
-                    <select onChange={(e:any) => setSelectValue(e.target.value)}>
+                    <select ref={selectValue}>
                         <option value="Iniciante">Iniciante</option>
                         <option value="Intermediário">Intermediário</option>
                         <option value="Avançado">Avançado</option>

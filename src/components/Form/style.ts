@@ -1,6 +1,6 @@
 import styled from "styled-components";
 
-type PropTypePosition = {
+interface PropTypePosition {
     position: string
 }
 

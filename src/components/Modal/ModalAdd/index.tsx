@@ -1,26 +1,42 @@
-import { useRef, useEffect, useState } from 'react'
+import { useRef, useState, FormEvent, FunctionComponent } from 'react'
 import { toast } from 'react-toastify'
+import { AnyObject } from 'yup/lib/types'
+import { useValidation } from '../../../context/validation'
 import { API } from '../../../services/api'
 import { ModalStructure } from '../ModalStructure'
 import * as S from './style'
 
-export const ModalAdd = ({ statusModalAdd, setStatusModalAdd, setTechs }: any) => {
-    const token = localStorage.getItem("@hub:token")
-    const inputValue:any = useRef()
-    const selectValue:any = useRef()
+interface iPropsValidate {
+    statusModalAdd: Boolean | undefined | null
+    setStatusModalAdd: Function
+    setTechs: Function
+}
 
-    const handleSubmit = async (e:any) => {
+interface iValidatyObjectAdd {
+    title: string | undefined
+    status: string | undefined
+}
+
+export const ModalAdd = ({ statusModalAdd, setStatusModalAdd, setTechs }:iPropsValidate) => {
+    const token = localStorage.getItem("@hub:token")
+    const { getUserData } = useValidation()
+    const inputValue = useRef<HTMLInputElement>(null)
+    const selectValue = useRef<HTMLSelectElement>(null)
+
+    const handleSubmit = async (e:FormEvent) => {
         e.preventDefault()
-        try {
-            const body = {
-                title: inputValue.current.value,
-                status: selectValue.current.value
+        try { 
+            const body: iValidatyObjectAdd = {
+                title: inputValue.current?.value,
+                status: selectValue.current?.value
             }
             await API.post("users/techs", body, {
                 headers: { "Authorization": `Bearer ${token}` }
             })
-            toast.success("Tecnologia Cadastrada com Sucesso")
+            const result = await getUserData(token)
+            setTechs(result)
             setStatusModalAdd(false)
+            toast.success("Tecnologia Cadastrada com Sucesso")
         } catch {
             toast.error("Ops! Verifique se preencheu os campos corretamente ou se há tecnologias com mesmo nome")
         }

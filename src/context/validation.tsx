@@ -1,17 +1,35 @@
-import { createContext } from "react"
+import { ContextType, createContext, ReactNode, useContext } from "react"
 import { useNavigate } from "react-router-dom"
 import { API } from "../services/api"
 import { toast } from 'react-toastify'
+import { AnyObject } from "yup/lib/types"
+
+interface iInfoValidaty {
+    email: string,
+    password: string,
+    name: string,
+    bio: string,
+    contact: string,
+    course_module: string
+}
+
+interface layout {
+    children: ReactNode
+}
+
+interface iToken {
+    token: string
+}
 
 export const ValidationContext = createContext({})
 
-export const ValidationProvider = ({ children }: any) => {
+export const ValidationProvider = ({ children }: layout) => {
     const navigate = useNavigate()
 
     const onSubmitFormLogin = async (dados: {}) => {
         try {
-            const { data }: any = await API.post('sessions', dados)
-            const { token } = data
+            const { data } = await API.post('sessions', dados)
+            const { token }:iToken = data
             localStorage.setItem("@hub:token", token)
             toast.success("Show. Manda Bala 🚀")
             navigate("/dashboard")
@@ -20,9 +38,8 @@ export const ValidationProvider = ({ children }: any) => {
         }
     }
 
-    const onSubmitFormRegister = async (data: {}) => {
+    const onSubmitFormRegister = async ({ email, password, name, bio, contact, course_module }: iInfoValidaty) => {
         try {
-            const { email, password, name, bio, contact, course_module }:any = data
             const info = {
                 "email": email,
                 "password": password,
@@ -39,10 +56,20 @@ export const ValidationProvider = ({ children }: any) => {
         }
     }
 
+    const getUserData = async(token:string) => {
+        const { data } = await API.get(`profile`, {
+            headers: { "Authorization": `Bearer ${token}` }
+        })
+        const { techs: technologies } = data
+        return technologies
+    }
+
     return (
         <ValidationContext.Provider
-            value={{ navigate, onSubmitFormLogin, onSubmitFormRegister }}>
+            value={{ navigate, getUserData, onSubmitFormLogin, onSubmitFormRegister }}>
             {children}
         </ValidationContext.Provider>
     )
 }
+
+export const useValidation:any = () => useContext(ValidationContext)

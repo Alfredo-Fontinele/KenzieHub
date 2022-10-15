@@ -8,10 +8,10 @@ import { FormStructure } from '../../components/Form'
 import { ToastContainerStatus } from '../../components/Toast/ToastContainer'
 import { Error } from '../../components/Error'
 import { API } from '../../services/api'
-import { ValidationContext } from '../../hooks/validation'
+import { useValidation } from '../../context/validation'
 
 export const Register = () => {
-    const { navigate, onSubmitFormRegister }:any = useContext(ValidationContext)
+    const { navigate, onSubmitFormRegister } = useValidation()
 
     const FormSchema = yup.object({
         name: yup.string().required("Nome Obrigatório"),
