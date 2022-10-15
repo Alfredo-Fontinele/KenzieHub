@@ -1,8 +1,7 @@
-import { ContextType, createContext, ReactNode, useContext } from "react"
+import { createContext, ReactNode, useContext } from "react"
 import { useNavigate } from "react-router-dom"
 import { API } from "../services/api"
 import { toast } from 'react-toastify'
-import { AnyObject } from "yup/lib/types"
 
 interface iInfoValidaty {
     email: string,
@@ -23,10 +22,10 @@ interface iToken {
 
 export const ValidationContext = createContext({})
 
-export const ValidationProvider = ({ children }: layout) => {
+export const ValidationProvider = ({ children }:layout) => {
     const navigate = useNavigate()
 
-    const onSubmitFormLogin = async (dados: {}) => {
+    const onSubmitFormLogin = async (dados:object) => {
         try {
             const { data } = await API.post('sessions', dados)
             const { token }:iToken = data
@@ -41,12 +40,12 @@ export const ValidationProvider = ({ children }: layout) => {
     const onSubmitFormRegister = async ({ email, password, name, bio, contact, course_module }: iInfoValidaty) => {
         try {
             const info = {
-                "email": email,
-                "password": password,
-                "name": name,
-                "bio": bio,
-                "contact": contact,
-                "course_module": course_module
+                email: email,
+                password: password,
+                name: name,
+                bio: bio,
+                contact: contact,
+                course_module: course_module
             }
             await API.post('users', info)    
             toast.success("Conta Criada com Sucesso")
@@ -72,4 +71,4 @@ export const ValidationProvider = ({ children }: layout) => {
     )
 }
 
-export const useValidation:any = () => useContext(ValidationContext)
+export const useValidation:Function = () => useContext(ValidationContext)

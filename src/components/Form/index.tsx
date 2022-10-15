@@ -6,9 +6,9 @@ export const FormStructure = ({ title, btnTitle, route, children }:AnyObject) =>
     <S.FormContainer>
         <S.FormTitle position={btnTitle ? "space-between" : "center"}>
             <h2>{title}</h2>
-            {btnTitle && (
+            {btnTitle &&
                 <Link to={route}>{btnTitle}</Link>
-            )}
+            }
         </S.FormTitle>
         {children}
     </S.FormContainer>

@@ -7,7 +7,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import { FormStructure } from '../../components/Form'
 import { ToastContainerStatus } from '../../components/Toast/ToastContainer'
 import { Error } from '../../components/Error'
-import { API } from '../../services/api'
 import { useValidation } from '../../context/validation'
 
 export const Register = () => {
