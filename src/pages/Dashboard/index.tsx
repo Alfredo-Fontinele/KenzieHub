@@ -7,10 +7,10 @@ import { User } from "../../components/User"
 import { useValidation } from "../../context/validation"
 
 export const Dashboard = () => {
-    const { navigate } = useValidation()
+    const { navigate, isLogged } = useValidation()
+    const logged = localStorage.getItem("@hub:token")
 
     useEffect(() => {
-        const logged = localStorage.getItem("@hub:token")
         if (!logged) {
             navigate("/")
         }
