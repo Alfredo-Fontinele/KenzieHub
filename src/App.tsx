@@ -3,7 +3,7 @@ import { ValidationProvider } from "./context/validation"
 import { RoutesGlobal } from "./routes/routes"
 import { GlobalStyle } from './style/global'
 
-const App = () => {
+export const App = () => {
   return (
     <>
       <GlobalStyle/>
@@ -14,5 +14,3 @@ const App = () => {
     </>
   )
 }
-
-export default App
